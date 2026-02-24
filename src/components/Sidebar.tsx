@@ -97,7 +97,6 @@ export default function Sidebar() {
                     ></div>
                     <div className="flex flex-col">
                         <span className="text-sm font-bold text-white leading-tight">Alex Morgan</span>
-                        <span className="text-xs text-slate-400">Free Plan</span>
                     </div>
                 </div>
             </nav>
