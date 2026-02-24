@@ -18,24 +18,24 @@ export default function Home() {
           </div>
 
           {/* Exercise Selection Overlay Config */}
-          <div className="mb-6 flex gap-3 p-1 rounded-full bg-surface-dark w-fit border border-white/5 overflow-x-auto max-w-full">
+          <div className="mb-8 flex gap-2 p-1.5 rounded-2xl bg-surface-dark/60 backdrop-blur-md w-fit border border-white/10 overflow-x-auto max-w-full shadow-lg">
             <button
               onClick={() => setExercise("Bench Press")}
-              className={`px-6 py-2 rounded-full font-bold text-sm transition-all whitespace-nowrap ${exercise === "Bench Press" ? "bg-primary text-black" : "text-white hover:bg-white/5"
+              className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all whitespace-nowrap ${exercise === "Bench Press" ? "bg-primary text-black shadow-[0_0_15px_rgba(57,255,20,0.4)] scale-105" : "text-slate-300 hover:text-white hover:bg-white/10"
                 }`}
             >
               Bench Press
             </button>
             <button
               onClick={() => setExercise("Squat")}
-              className={`px-6 py-2 rounded-full font-bold text-sm transition-all whitespace-nowrap ${exercise === "Squat" ? "bg-primary text-black" : "text-white hover:bg-white/5"
+              className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all whitespace-nowrap ${exercise === "Squat" ? "bg-primary text-black shadow-[0_0_15px_rgba(57,255,20,0.4)] scale-105" : "text-slate-300 hover:text-white hover:bg-white/10"
                 }`}
             >
-              Squat
+              Back Squat
             </button>
             <button
               onClick={() => setExercise("Deadlift")}
-              className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${exercise === "Deadlift" ? "bg-primary text-black" : "text-white hover:bg-white/5"
+              className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${exercise === "Deadlift" ? "bg-primary text-black shadow-[0_0_15px_rgba(57,255,20,0.4)] scale-105" : "text-slate-300 hover:text-white hover:bg-white/10"
                 }`}
             >
               Deadlift
@@ -180,17 +180,17 @@ export default function Home() {
                 </div>
 
                 {/* Card 3 */}
-                <div className="group flex items-center justify-between p-4 bg-surface-dark hover:bg-white/5 border border-white/5 hover:border-primary/30 rounded-xl transition-all cursor-pointer">
+                <div className="group flex items-center justify-between p-4 bg-surface-dark hover:bg-surface-dark-hover border border-white/5 hover:border-primary/30 rounded-xl transition-all cursor-pointer shadow-sm">
                   <div className="flex items-center gap-4">
                     <div className="size-12 rounded-lg bg-surface-darker flex items-center justify-center border border-white/10 group-hover:border-primary/50 text-white group-hover:text-primary transition-colors">
                       <span className="material-symbols-outlined">sports_gymnastics</span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-white group-hover:text-primary transition-colors">Overhead Press</h4>
+                      <h4 className="font-bold text-white group-hover:text-primary transition-colors">Bench Press</h4>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-slate-400">Oct 24, 6:00 PM</span>
                         <span className="size-1 rounded-full bg-slate-600"></span>
-                        <span className="text-xs text-orange-400">Spine Arch Detected</span>
+                        <span className="text-xs text-orange-400">Elbow Flare Detected</span>
                       </div>
                     </div>
                   </div>
