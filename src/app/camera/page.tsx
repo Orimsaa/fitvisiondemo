@@ -9,8 +9,11 @@ function CameraContent() {
     const searchParams = useSearchParams();
     const model = searchParams.get("model")?.toLowerCase() || "benchpress";
 
-    const exerciseName = model === "squat" ? "Back Squat" : model === "deadlift" ? "Deadlift" : "Bench Press";
-    const isGoodForm = model === "squat" || model === "benchpress";
+    const [currentExercise, setCurrentExercise] = useState(model);
+    const [repGoal, setRepGoal] = useState(12);
+
+    const exerciseName = currentExercise === "squat" ? "Back Squat" : currentExercise === "deadlift" ? "Deadlift" : "Bench Press";
+    const isGoodForm = currentExercise === "squat" || currentExercise === "benchpress";
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -106,9 +109,9 @@ function CameraContent() {
     }, [areScriptsLoaded]);
 
     const feedbackModel =
-        model === "squat"
+        currentExercise === "squat"
             ? { title: "Depth Check", detail: "Squat depth is good, break parallel to hit full range of motion." }
-            : model === "deadlift"
+            : currentExercise === "deadlift"
                 ? { title: "Correction Needed", detail: "Keep your back straight. Hips are rising too fast." }
                 : { title: "Bar Path Check", detail: "Keep your elbows tucked and lower the bar to your lower chest." };
 
@@ -184,18 +187,38 @@ function CameraContent() {
                         {/* Subtle green glow effect */}
                         <div className="absolute -top-10 -right-10 w-20 h-20 bg-primary/20 blur-3xl rounded-full"></div>
                         <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-start">
-                                <div>
-                                    <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Current Exercise</p>
-                                    <h2 className="text-2xl font-bold text-white">{exerciseName}</h2>
+                            <div className="flex justify-between items-start gap-4">
+                                <div className="flex flex-col gap-1 w-full relative">
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider pl-1">Exercise</label>
+                                    <select
+                                        value={currentExercise}
+                                        onChange={(e) => setCurrentExercise(e.target.value)}
+                                        className="appearance-none bg-black/40 border border-white/10 rounded-xl text-white font-bold p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full cursor-pointer transition-colors hover:bg-black/60"
+                                    >
+                                        <option value="benchpress">Bench Press</option>
+                                        <option value="squat">Back Squat</option>
+                                        <option value="deadlift">Deadlift</option>
+                                    </select>
+                                    <span className="material-symbols-outlined absolute right-3 bottom-3 text-slate-400 pointer-events-none">expand_more</span>
                                 </div>
-                                <div className="flex flex-col items-end gap-2">
-                                    <div className="px-2 py-1 bg-primary/20 border border-primary/30 rounded text-primary text-xs font-bold flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-sm" style={{ fontSize: "14px" }}>
-                                            check_circle
-                                        </span>
-                                        FORM: 85%
-                                    </div>
+                                <div className="flex flex-col gap-1 w-[120px]">
+                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider text-right pr-1">Rep Goal</label>
+                                    <input
+                                        type="number"
+                                        value={repGoal}
+                                        onChange={(e) => setRepGoal(Number(e.target.value) || 1)}
+                                        min="1" max="100"
+                                        className="bg-black/40 border border-white/10 rounded-xl text-white font-bold p-3 text-right focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full transition-colors hover:bg-black/60"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-end gap-2 mt-2">
+                                <div className="px-2 py-1 bg-primary/20 border border-primary/30 rounded text-primary text-xs font-bold flex items-center gap-1 self-end">
+                                    <span className="material-symbols-outlined text-sm" style={{ fontSize: "14px" }}>
+                                        check_circle
+                                    </span>
+                                    FORM: 85%
                                 </div>
                             </div>
 
@@ -224,7 +247,7 @@ function CameraContent() {
                                 </div>
                                 <div className="flex-1 bg-black/40 rounded-lg p-2 flex items-center justify-center gap-2 border border-white/5">
                                     <span className="material-symbols-outlined text-blue-400 text-sm">fitness_center</span>
-                                    <span className="text-xs text-white font-medium">Reps: 8/12</span>
+                                    <span className="text-xs text-white font-medium">Reps: 0/{repGoal}</span>
                                 </div>
                             </div>
                         </div>
