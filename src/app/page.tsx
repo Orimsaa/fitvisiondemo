@@ -5,7 +5,7 @@ import { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 
 export default function Home() {
-  const [exercise, setExercise] = useState<"Squat" | "Deadlift">("Squat");
+  const [exercise, setExercise] = useState<"Bench Press" | "Squat" | "Deadlift">("Bench Press");
 
   return (
     <>
@@ -18,10 +18,17 @@ export default function Home() {
           </div>
 
           {/* Exercise Selection Overlay Config */}
-          <div className="mb-6 flex gap-3 p-1 rounded-full bg-surface-dark w-fit border border-white/5">
+          <div className="mb-6 flex gap-3 p-1 rounded-full bg-surface-dark w-fit border border-white/5 overflow-x-auto max-w-full">
+            <button
+              onClick={() => setExercise("Bench Press")}
+              className={`px-6 py-2 rounded-full font-bold text-sm transition-all whitespace-nowrap ${exercise === "Bench Press" ? "bg-primary text-black" : "text-white hover:bg-white/5"
+                }`}
+            >
+              Bench Press
+            </button>
             <button
               onClick={() => setExercise("Squat")}
-              className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${exercise === "Squat" ? "bg-primary text-black" : "text-white hover:bg-white/5"
+              className={`px-6 py-2 rounded-full font-bold text-sm transition-all whitespace-nowrap ${exercise === "Squat" ? "bg-primary text-black" : "text-white hover:bg-white/5"
                 }`}
             >
               Squat
@@ -62,7 +69,7 @@ export default function Home() {
 
                 <div className="flex flex-wrap gap-3">
                   <Link
-                    href={`/camera?model=${exercise.toLowerCase()}`}
+                    href={`/camera?model=${exercise.toLowerCase().replace(" ", "")}`}
                     className="bg-primary hover:bg-primary/90 text-background-dark font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition-colors cursor-pointer"
                   >
                     <span className="material-symbols-outlined">videocam</span>

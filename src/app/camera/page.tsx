@@ -7,9 +7,10 @@ import Script from "next/script";
 
 function CameraContent() {
     const searchParams = useSearchParams();
-    const model = searchParams.get("model")?.toLowerCase() || "deadlift";
+    const model = searchParams.get("model")?.toLowerCase() || "benchpress";
 
-    const exerciseName = model === "squat" ? "Back Squat" : "Deadlift";
+    const exerciseName = model === "squat" ? "Back Squat" : model === "deadlift" ? "Deadlift" : "Bench Press";
+    const isGoodForm = model === "squat" || model === "benchpress";
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -107,7 +108,9 @@ function CameraContent() {
     const feedbackModel =
         model === "squat"
             ? { title: "Depth Check", detail: "Squat depth is good, break parallel to hit full range of motion." }
-            : { title: "Correction Needed", detail: "Keep your back straight. Hips are rising too fast." };
+            : model === "deadlift"
+                ? { title: "Correction Needed", detail: "Keep your back straight. Hips are rising too fast." }
+                : { title: "Bar Path Check", detail: "Keep your elbows tucked and lower the bar to your lower chest." };
 
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-hidden relative">
@@ -199,15 +202,15 @@ function CameraContent() {
                             <div className="h-px w-full bg-white/10"></div>
 
                             {/* Alert / Feedback Section */}
-                            <div className={`flex items-start gap-3 border rounded-lg p-3 ${model === "squat" ? "bg-primary/10 border-primary/30" : "bg-red-500/10 border-red-500/30"}`}>
-                                <span className={`material-symbols-outlined shrink-0 ${model === "squat" ? "text-primary" : "text-red-400"}`}>
-                                    {model === "squat" ? "info" : "warning"}
+                            <div className={`flex items-start gap-3 border rounded-lg p-3 ${isGoodForm ? "bg-primary/10 border-primary/30" : "bg-red-500/10 border-red-500/30"}`}>
+                                <span className={`material-symbols-outlined shrink-0 ${isGoodForm ? "text-primary" : "text-red-400"}`}>
+                                    {isGoodForm ? "info" : "warning"}
                                 </span>
                                 <div className="flex flex-col">
-                                    <span className={`font-bold text-sm ${model === "squat" ? "text-primary" : "text-red-300"}`}>
+                                    <span className={`font-bold text-sm ${isGoodForm ? "text-primary" : "text-red-300"}`}>
                                         {feedbackModel.title}
                                     </span>
-                                    <span className={`${model === "squat" ? "text-primary" : "text-red-200"} text-sm leading-tight opacity-80`}>
+                                    <span className={`${isGoodForm ? "text-primary" : "text-red-200"} text-sm leading-tight opacity-80`}>
                                         {isModelReady ? feedbackModel.detail : "Warming up AI model... Please stand in frame."}
                                     </span>
                                 </div>
