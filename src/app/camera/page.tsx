@@ -193,7 +193,7 @@ function CameraContent() {
                                     <select
                                         value={currentExercise}
                                         onChange={(e) => setCurrentExercise(e.target.value)}
-                                        className="appearance-none bg-black/40 border border-white/10 rounded-xl text-white font-bold p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full cursor-pointer transition-colors hover:bg-black/60"
+                                        className="appearance-none bg-surface-dark/80 border border-white/10 rounded-xl text-white font-bold py-3 pl-4 pr-10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full cursor-pointer transition-all hover:bg-surface-dark hover:border-white/20 shadow-inner"
                                     >
                                         <option value="benchpress">Bench Press</option>
                                         <option value="squat">Back Squat</option>
@@ -208,17 +208,16 @@ function CameraContent() {
                                         value={repGoal}
                                         onChange={(e) => setRepGoal(Number(e.target.value) || 1)}
                                         min="1" max="100"
-                                        className="bg-black/40 border border-white/10 rounded-xl text-white font-bold p-3 text-right focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full transition-colors hover:bg-black/60"
+                                        className="bg-surface-dark/80 border border-white/10 rounded-xl text-white font-bold py-3 px-4 text-center focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full transition-all hover:bg-surface-dark hover:border-white/20 shadow-inner"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex flex-col items-end gap-2 mt-2">
-                                <div className="px-2 py-1 bg-primary/20 border border-primary/30 rounded text-primary text-xs font-bold flex items-center gap-1 self-end">
-                                    <span className="material-symbols-outlined text-sm" style={{ fontSize: "14px" }}>
-                                        check_circle
-                                    </span>
-                                    FORM: 85%
+                            {/* Status Badge */}
+                            <div className="flex shrink-0">
+                                <div className="px-3 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/30 rounded-xl text-primary font-bold flex flex-col items-center justify-center gap-1 shadow-[0_0_15px_rgba(57,255,20,0.15)] w-[80px]">
+                                    <span className="text-[10px] text-primary/80 uppercase tracking-widest leading-none">Form</span>
+                                    <span className="text-xl leading-none">85<span className="text-xs">%</span></span>
                                 </div>
                             </div>
 
