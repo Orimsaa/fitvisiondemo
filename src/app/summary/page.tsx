@@ -15,12 +15,6 @@ export default function SummaryPage() {
                         <h2 className="text-2xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">Session Overview</h2>
                     </div>
                     <div className="flex gap-3">
-                        <button className="p-2.5 rounded-xl bg-surface-dark border border-primary/10 text-slate-100 hover:bg-primary/5 transition-all">
-                            <span className="material-symbols-outlined">notifications</span>
-                        </button>
-                        <button className="p-2.5 rounded-xl bg-surface-dark border border-primary/10 text-slate-100 hover:bg-primary/5 transition-all">
-                            <span className="material-symbols-outlined">account_circle</span>
-                        </button>
                     </div>
                 </header>
 
