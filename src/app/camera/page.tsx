@@ -2,17 +2,39 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef } from "react";
 
 function CameraContent() {
     const searchParams = useSearchParams();
     const model = searchParams.get("model")?.toLowerCase() || "deadlift";
 
     const exerciseName = model === "squat" ? "Back Squat" : "Deadlift";
-    const bgImage =
-        model === "squat"
-            ? "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBSPGhF6FdF9bU_LRCvoWAyktliyijADwekce0CfAncyducIDikZjxGF5094eW6FMdcAkRM3Zyt863v8ORD01e3_7h_84JVt3r5UabJF2NLrRPqC10XiMFMlLkgeEAMD1IFcBcriuhDbJCIvUuXxjIGLfO88IOv5nQdgr0lcdyCUwBDnSKN4Ce7YRByxTu9pqqCjvb0sIDjbQ5qQouFGeMSARXkws4p3sASsaHpSyW6vmt_-l-Ud4lp9piwPfV-20XYO62ZfRJM6Q')"
-            : "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCIjPctrrRIxez7O341YGdYRvARy-f4NeGOsbePGy3EAG5-gymR0j5XJdyOiev_kUL_NDbIZTSyRNu9VOkMx8s7H6JvZwQ1xHXls57X0veyN3Z0iMXpuM0BPf_8LJe7Ee0tvfE-pBa899ZSxY7Gldg-qTS8XjHQpkOY7xJrJX5lM8dsmQz2O-Wvsh0ev_I5UgeJhiGLmeCarG7pMdTajsHHOYmDo2uGf5iFR9QU1qdRCP0nkzlYX63b0Vzi9G4vfl71nxxrsufRj1Ns')";
+
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        let stream: MediaStream | null = null;
+        async function setupCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "user" },
+                    audio: false
+                });
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                }
+            } catch (err) {
+                console.error("Error accessing camera:", err);
+            }
+        }
+        setupCamera();
+
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach((track) => track.stop());
+            }
+        };
+    }, []);
 
     const feedbackModel =
         model === "squat"
@@ -21,14 +43,18 @@ function CameraContent() {
 
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-hidden relative">
-            {/* Background Camera Feed Simulation */}
-            <div
-                className="absolute inset-0 z-0 bg-cover bg-center"
+            {/* Real Camera Feed */}
+            <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="absolute inset-0 z-0 w-full h-full object-cover"
                 style={{
-                    backgroundImage: bgImage,
-                    filter: "brightness(0.4) contrast(1.1) blur(2px)",
+                    filter: "brightness(0.6) contrast(1.1)",
+                    transform: "scaleX(-1)" // Mirror the image for self-facing
                 }}
-            ></div>
+            />
 
             {/* Tech Overlay Pattern */}
             <div className="absolute inset-0 z-0 bg-grid-pattern pointer-events-none"></div>
