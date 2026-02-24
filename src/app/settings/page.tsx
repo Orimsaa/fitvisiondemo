@@ -261,18 +261,8 @@ export default function SettingsPage() {
                             )}
                         </div>
 
-                        {/* Subscription & Save Actions Row */}
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            {/* Pro Badge */}
-                            <div className="bg-gradient-to-r from-surface-dark to-surface-darker border border-primary/20 rounded-xl px-5 py-4 flex items-center gap-4 relative overflow-hidden group w-full md:w-auto shrink-0 shadow-lg">
-                                <div className="absolute -right-4 -bottom-4 size-20 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
-                                <span className="material-symbols-outlined text-primary text-3xl drop-shadow-[0_0_8px_rgba(57,255,20,0.5)] z-10">verified</span>
-                                <div className="flex flex-col z-10">
-                                    <h3 className="text-base font-bold text-white leading-tight">FitVision Pro Active</h3>
-                                    <p className="text-slate-400 text-xs">Renews Dec 31, 2026</p>
-                                </div>
-                            </div>
-
+                        {/* Save Actions Row */}
+                        <div className="flex flex-col md:flex-row items-center justify-end gap-6">
                             {/* Save Actions */}
                             <div className="flex justify-end gap-3 w-full md:w-auto items-center">
                                 {savedAlert && (

@@ -119,7 +119,7 @@ export default function Home() {
 
               <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-white/5 rounded-2xl p-6 relative overflow-hidden">
                 <div className="relative z-10">
-                  <h3 className="text-lg font-bold text-white mb-2">Pro Tip</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">AI Tip</h3>
                   <p className="text-slate-300 text-sm mb-4">
                     Your squat depth has improved, but watch your knee alignment on the ascent.
                   </p>
