@@ -28,12 +28,16 @@ export default function SettingsPage() {
     return (
         <DashboardLayout>
             <div className="max-w-[1000px] mx-auto p-6 md:p-10 flex flex-col gap-8 pb-32">
-                {/* Header Section */}
-                <div className="flex flex-col gap-2">
-                    <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                {/* Premium Header Section */}
+                <div className="flex flex-col gap-2 mb-2">
+                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 flex items-center gap-3">
+                        <span className="material-symbols-outlined text-primary text-4xl md:text-5xl drop-shadow-[0_0_12px_rgba(57,255,20,0.4)]">settings</span>
                         Settings
                     </h1>
-                    <p className="text-slate-400">Manage your profile, preferences, and account details.</p>
+                    <p className="text-slate-400 font-medium flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary/80 text-sm">manage_accounts</span>
+                        Manage your profile, preferences, and account details.
+                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

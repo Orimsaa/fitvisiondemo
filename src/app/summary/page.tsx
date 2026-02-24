@@ -5,13 +5,14 @@ export default function SummaryPage() {
     return (
         <div className="flex min-h-screen">
             <main className="flex-1 md:ml-64 flex flex-col h-screen overflow-y-auto">
-                <header className="sticky top-0 z-10 flex items-center justify-between px-8 py-4 bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
-                    <div className="flex items-center gap-4 text-slate-100 lg:hidden">
-                        <span className="material-symbols-outlined text-primary">monitoring</span>
-                        <h2 className="text-lg font-bold">FitVision</h2>
+                <header className="sticky top-0 z-10 flex items-center justify-between px-6 lg:px-10 py-5 bg-background-dark/80 backdrop-blur-xl border-b border-white/5 shadow-sm">
+                    <div className="flex items-center gap-3 text-slate-100 lg:hidden">
+                        <span className="material-symbols-outlined text-primary text-2xl drop-shadow-[0_0_8px_rgba(57,255,20,0.5)]">monitoring</span>
+                        <h2 className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">FitVision</h2>
                     </div>
-                    <div className="hidden lg:block">
-                        <h2 className="text-slate-100 text-lg font-bold">Session Overview</h2>
+                    <div className="hidden lg:flex items-center gap-3">
+                        <span className="material-symbols-outlined text-primary text-3xl drop-shadow-[0_0_12px_rgba(57,255,20,0.4)]">analytics</span>
+                        <h2 className="text-2xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">Session Overview</h2>
                     </div>
                     <div className="flex gap-3">
                         <button className="p-2.5 rounded-xl bg-surface-dark border border-primary/10 text-slate-100 hover:bg-primary/5 transition-all">

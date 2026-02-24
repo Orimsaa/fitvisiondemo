@@ -29,15 +29,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         ></div>
                     </header>
 
-                    {/* Desktop Header */}
-                    <header className="hidden md:flex items-center justify-between px-10 py-8">
-                        <div>
-                            <h1 className="text-3xl font-bold text-white">Hello, Athlete</h1>
-                            <p className="text-slate-400 mt-1">Ready to perfect your form today?</p>
-                        </div>
-                        <button className="flex items-center justify-center size-10 rounded-full bg-surface-dark border border-white/10 hover:border-primary/50 text-white transition-all relative group">
-                            <span className="material-symbols-outlined">notifications</span>
-                            <span className="absolute top-2 right-2.5 size-2 bg-primary rounded-full"></span>
+                    {/* Desktop Header Topbar */}
+                    <header className="hidden md:flex items-center justify-end px-10 pt-8 pb-2">
+                        <button className="flex flex-col items-center justify-center size-10 rounded-full bg-surface-dark border border-white/10 hover:border-primary/50 text-white transition-all relative group shadow-sm">
+                            <span className="material-symbols-outlined group-hover:text-primary transition-colors">notifications</span>
+                            <span className="absolute top-2 right-2.5 size-2 bg-primary rounded-full shadow-[0_0_8px_rgba(57,255,20,0.8)]"></span>
                         </button>
                     </header>
 

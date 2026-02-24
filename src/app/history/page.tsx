@@ -6,11 +6,17 @@ export default function HistoryPage() {
         <>
             <DashboardLayout>
                 <div className="max-w-[1200px] mx-auto p-6 md:p-10 flex flex-col gap-8 pb-20">
-                    {/* Header Section */}
-                    <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    {/* Premium Header Section */}
+                    <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-2">
                         <div className="flex flex-col gap-2">
-                            <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">Workout History</h1>
-                            <p className="text-slate-400 text-lg">Track your form accuracy and consistency over time.</p>
+                            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 flex items-center gap-3">
+                                <span className="material-symbols-outlined text-primary text-4xl md:text-5xl drop-shadow-[0_0_12px_rgba(57,255,20,0.4)]">history</span>
+                                Workout History
+                            </h1>
+                            <p className="text-slate-400 font-medium flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary/80 text-sm">insights</span>
+                                Track your form accuracy and consistency over time.
+                            </p>
                         </div>
 
                         {/* Filter Pills */}

@@ -11,10 +11,16 @@ export default function Home() {
     <>
       <DashboardLayout>
         <div className="px-5 md:px-10 max-w-7xl mx-auto">
-          {/* Mobile Greeting (Only visible on small screens) */}
-          <div className="md:hidden mb-6 mt-2">
-            <h1 className="text-2xl font-bold text-white">Hello, Athlete</h1>
-            <p className="text-slate-400 text-sm">Let&apos;s crush today&apos;s workout.</p>
+          {/* Premium Page Header */}
+          <div className="mb-10 mt-2 flex flex-col gap-2">
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 flex items-center gap-3">
+              Hello, <span className="text-primary drop-shadow-[0_0_12px_rgba(57,255,20,0.4)]">Athlete</span>
+              <span className="material-symbols-outlined text-primary text-3xl md:text-5xl animate-[wave_2s_ease-in-out_infinite] origin-bottom-right">waving_hand</span>
+            </h1>
+            <p className="text-slate-400 font-medium flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary/80 text-sm">electric_bolt</span>
+              Ready to perfect your form today?
+            </p>
           </div>
 
           {/* Exercise Selection Overlay Config */}
