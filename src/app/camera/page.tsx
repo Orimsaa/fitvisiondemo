@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import Script from "next/script";
 
 function CameraContent() {
     const searchParams = useSearchParams();
@@ -11,30 +12,97 @@ function CameraContent() {
     const exerciseName = model === "squat" ? "Back Squat" : "Deadlift";
 
     const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [isModelReady, setIsModelReady] = useState(false);
+    const [areScriptsLoaded, setAreScriptsLoaded] = useState(false);
 
     useEffect(() => {
-        let stream: MediaStream | null = null;
-        async function setupCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "user" },
-                    audio: false
-                });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
+        if (!areScriptsLoaded) return;
+
+        // At this point, window.Pose, window.Camera, etc. should be available
+        const win = window as any;
+        const Pose = win.Pose;
+        const Camera = win.Camera;
+        const drawConnectors = win.drawConnectors;
+        const drawLandmarks = win.drawLandmarks;
+        const POSE_CONNECTIONS = win.POSE_CONNECTIONS;
+
+        if (!Pose || !Camera) return;
+
+        let camera: any = null;
+        let pose: any = null;
+        let isUnmounted = false;
+
+        const initMediaPipe = async () => {
+            if (!videoRef.current || !canvasRef.current) return;
+
+            const videoElement = videoRef.current;
+            const canvasElement = canvasRef.current;
+            const canvasCtx = canvasElement.getContext("2d");
+
+            pose = new Pose({
+                locateFile: (file: string) => {
+                    return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+                },
+            });
+
+            pose.setOptions({
+                modelComplexity: 1,
+                smoothLandmarks: true,
+                enableSegmentation: false,
+                smoothSegmentation: false,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5,
+            });
+
+            pose.onResults((results: any) => {
+                if (isUnmounted) return;
+                setIsModelReady(true);
+
+                if (!canvasCtx || !canvasElement || !videoElement) return;
+
+                if (canvasElement.width !== videoElement.videoWidth) {
+                    canvasElement.width = videoElement.videoWidth;
+                    canvasElement.height = videoElement.videoHeight;
                 }
-            } catch (err) {
-                console.error("Error accessing camera:", err);
-            }
-        }
-        setupCamera();
+
+                canvasCtx.save();
+                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+                if (results.poseLandmarks) {
+                    drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, { color: "#38ff14", lineWidth: 4 });
+                    drawLandmarks(canvasCtx, results.poseLandmarks, { color: "#ef4444", lineWidth: 2, radius: 4 });
+                }
+                canvasCtx.restore();
+            });
+
+            camera = new Camera(videoElement, {
+                onFrame: async () => {
+                    if (isUnmounted) return;
+                    if (videoElement.videoWidth > 0 && videoElement.videoHeight > 0) {
+                        await pose?.send({ image: videoElement });
+                    }
+                },
+                width: 640,
+                height: 480,
+                facingMode: "user"
+            });
+
+            camera.start();
+        };
+
+        initMediaPipe();
 
         return () => {
-            if (stream) {
-                stream.getTracks().forEach((track) => track.stop());
+            isUnmounted = true;
+            if (camera) {
+                camera.stop();
+            }
+            if (pose) {
+                pose.close();
             }
         };
-    }, []);
+    }, [areScriptsLoaded]);
 
     const feedbackModel =
         model === "squat"
@@ -43,6 +111,16 @@ function CameraContent() {
 
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-hidden relative">
+            {/* Scripts to load MediaPipe from CDN */}
+            <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" strategy="lazyOnload" />
+            <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" strategy="lazyOnload" />
+            <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" strategy="lazyOnload"
+                onLoad={() => {
+                    // Slight delay to ensure all scripts are fully ready on window
+                    setTimeout(() => setAreScriptsLoaded(true), 500);
+                }}
+            />
+
             {/* Real Camera Feed */}
             <video
                 ref={videoRef}
@@ -52,70 +130,22 @@ function CameraContent() {
                 className="absolute inset-0 z-0 w-full h-full object-cover"
                 style={{
                     filter: "brightness(0.6) contrast(1.1)",
-                    transform: "scaleX(-1)" // Mirror the image for self-facing
+                    transform: "scaleX(-1)", // Mirror the image for self-facing
                 }}
             />
 
             {/* Tech Overlay Pattern */}
             <div className="absolute inset-0 z-0 bg-grid-pattern pointer-events-none"></div>
 
-            {/* Skeletal Tracking Overlay (SVG) */}
+            {/* Skeletal Tracking Overlay (Canvas) */}
             <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <svg
-                    className="w-full h-full max-w-4xl max-h-[80vh] opacity-80"
-                    fill="none"
-                    viewBox="0 0 400 600"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    {/* Bounding Box */}
-                    <rect
-                        fill="none"
-                        height="500"
-                        rx="20"
-                        stroke="#38ff14"
-                        strokeDasharray="10 5"
-                        strokeOpacity="0.3"
-                        strokeWidth="1"
-                        width="300"
-                        x="50"
-                        y="50"
-                    ></rect>
-                    {/* Corner Markers */}
-                    <path d="M50 100 V50 H100" stroke="#38ff14" strokeWidth="2"></path>
-                    <path d="M350 100 V50 H300" stroke="#38ff14" strokeWidth="2"></path>
-                    <path d="M50 500 V550 H100" stroke="#38ff14" strokeWidth="2"></path>
-                    <path d="M350 500 V550 H300" stroke="#38ff14" strokeWidth="2"></path>
-
-                    {/* Skeleton Lines */}
-                    <line stroke="#38ff14" strokeWidth="2" x1="200" x2="200" y1="120" y2="180"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="160" x2="240" y1="180" y2="180"></line>
-                    <line stroke="#ef4444" strokeWidth="3" x1="200" x2="200" y1="180" y2="320"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="170" x2="230" y1="320" y2="320"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="160" x2="140" y1="180" y2="280"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="140" x2="150" y1="280" y2="360"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="240" x2="260" y1="180" y2="280"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="260" x2="250" y1="280" y2="360"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="170" x2="160" y1="320" y2="440"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="160" x2="160" y1="440" y2="540"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="230" x2="240" y1="320" y2="440"></line>
-                    <line stroke="#38ff14" strokeWidth="2" x1="240" x2="240" y1="440" y2="540"></line>
-
-                    {/* Joints */}
-                    <circle cx="200" cy="100" fill="none" r="15" stroke="#38ff14" strokeWidth="2"></circle>
-                    <circle cx="200" cy="180" fill="#38ff14" r="4"></circle>
-                    <circle cx="160" cy="180" fill="#38ff14" r="4"></circle>
-                    <circle cx="240" cy="180" fill="#38ff14" r="4"></circle>
-                    <circle cx="140" cy="280" fill="#38ff14" r="4"></circle>
-                    <circle cx="260" cy="280" fill="#38ff14" r="4"></circle>
-                    <circle cx="150" cy="360" fill="#38ff14" r="4"></circle>
-                    <circle cx="250" cy="360" fill="#38ff14" r="4"></circle>
-                    <circle cx="170" cy="320" fill="#38ff14" r="4"></circle>
-                    <circle cx="230" cy="320" fill="#38ff14" r="4"></circle>
-                    <circle cx="160" cy="440" fill="#38ff14" r="4"></circle>
-                    <circle cx="240" cy="440" fill="#38ff14" r="4"></circle>
-                    <circle cx="160" cy="540" fill="#38ff14" r="4"></circle>
-                    <circle cx="240" cy="540" fill="#38ff14" r="4"></circle>
-                </svg>
+                <canvas
+                    ref={canvasRef}
+                    className="w-full h-full object-cover opacity-80"
+                    style={{
+                        transform: "scaleX(-1)", // Must be mirrored to match the mirrored video
+                    }}
+                />
             </div>
 
             {/* UI Layer */}
@@ -124,30 +154,30 @@ function CameraContent() {
                 <header className="flex items-center justify-between w-full">
                     <Link
                         href="/"
-                        className="flex items-center gap-2 text-white/90 hover:text-primary transition-colors bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10"
+                        className="flex items-center gap-2 text-white/90 hover:text-primary transition-colors bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 shadow-lg"
                     >
                         <span className="material-symbols-outlined text-lg">arrow_back_ios_new</span>
                         <span className="font-medium">Back</span>
                     </Link>
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md rounded-lg border border-white/10">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 shadow-lg">
                             <span className="material-symbols-outlined text-primary text-sm">videocam</span>
                             <span className="text-xs font-bold text-white tracking-wider">AI VISION ACTIVE</span>
                         </div>
-                        <div className="animate-pulse-red bg-red-600 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-lg shadow-red-900/50">
-                            <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                            <span className="text-xs font-bold tracking-widest">LIVE 00:42</span>
+                        <div className={`text-white px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-lg ${isModelReady ? "animate-pulse-red bg-red-600 shadow-red-900/50" : "bg-orange-500 shadow-orange-900/50"}`}>
+                            <div className={`w-2 h-2 rounded-full bg-white ${isModelReady ? "animate-pulse" : ""}`}></div>
+                            <span className="text-xs font-bold tracking-widest">{isModelReady ? "LIVE 00:42" : "LOADING AI"}</span>
                         </div>
                     </div>
                 </header>
 
                 {/* Center Area (Empty for camera view clarity) */}
-                <div className="flex-1"></div>
+                <div className="flex-1 border-4 border-dashed border-primary/10 rounded-3xl m-4 pointer-events-none hidden md:block"></div>
 
                 {/* Bottom Controls & Info */}
                 <div className="w-full flex flex-col items-center gap-6 pb-4">
                     {/* Analysis Card */}
-                    <div className="w-full max-w-md bg-background-dark/60 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl relative overflow-hidden group">
+                    <div className="w-full max-w-md bg-background-dark/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl relative overflow-hidden group">
                         {/* Subtle green glow effect */}
                         <div className="absolute -top-10 -right-10 w-20 h-20 bg-primary/20 blur-3xl rounded-full"></div>
                         <div className="flex flex-col gap-3">
@@ -178,18 +208,18 @@ function CameraContent() {
                                         {feedbackModel.title}
                                     </span>
                                     <span className={`${model === "squat" ? "text-primary" : "text-red-200"} text-sm leading-tight opacity-80`}>
-                                        {feedbackModel.detail}
+                                        {isModelReady ? feedbackModel.detail : "Warming up AI model... Please stand in frame."}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Stats Row */}
                             <div className="flex gap-2 mt-1">
-                                <div className="flex-1 bg-background-dark/40 rounded-lg p-2 flex items-center justify-center gap-2 border border-white/5">
+                                <div className="flex-1 bg-black/40 rounded-lg p-2 flex items-center justify-center gap-2 border border-white/5">
                                     <span className="material-symbols-outlined text-primary text-sm">health_and_safety</span>
                                     <span className="text-xs text-white font-medium">Injury Risk: Low</span>
                                 </div>
-                                <div className="flex-1 bg-background-dark/40 rounded-lg p-2 flex items-center justify-center gap-2 border border-white/5">
+                                <div className="flex-1 bg-black/40 rounded-lg p-2 flex items-center justify-center gap-2 border border-white/5">
                                     <span className="material-symbols-outlined text-blue-400 text-sm">fitness_center</span>
                                     <span className="text-xs text-white font-medium">Reps: 8/12</span>
                                 </div>
