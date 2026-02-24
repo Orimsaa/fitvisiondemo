@@ -39,8 +39,8 @@ export default function Sidebar() {
                     <div className="flex flex-col gap-2">
                         <Link
                             className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${pathname === "/"
-                                    ? "bg-primary/10 text-primary border border-primary/20"
-                                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                                ? "bg-primary/10 text-primary border border-primary/20"
+                                : "text-slate-400 hover:text-white hover:bg-white/5"
                                 }`}
                             href="/"
                         >
@@ -49,8 +49,8 @@ export default function Sidebar() {
                         </Link>
                         <Link
                             className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${pathname === "/history"
-                                    ? "bg-primary/10 text-primary border border-primary/20"
-                                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                                ? "bg-primary/10 text-primary border border-primary/20"
+                                : "text-slate-400 hover:text-white hover:bg-white/5"
                                 }`}
                             href="/history"
                         >
@@ -137,12 +137,14 @@ export default function Sidebar() {
                     <span className="material-symbols-outlined">analytics</span>
                     <span className="text-[10px] font-medium">Stats</span>
                 </Link>
-                <button
-                    className="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                <Link
+                    href="/settings"
+                    className={`flex flex-col items-center gap-1 transition-colors ${pathname?.startsWith("/settings") ? "text-primary" : "text-slate-400 hover:text-white"
+                        }`}
                 >
                     <span className="material-symbols-outlined">settings</span>
                     <span className="text-[10px] font-medium">Settings</span>
-                </button>
+                </Link>
             </nav>
         </>
     );

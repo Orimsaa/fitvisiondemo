@@ -26,7 +26,7 @@ export default function HistoryPage() {
                                 <span>Squat</span>
                             </button>
                             <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-surface-dark border border-white/10 text-white hover:border-primary/50 transition-colors shrink-0">
-                                <span>Barbell Row</span>
+                                <span>Bench Press</span>
                             </button>
                         </div>
                     </header>
@@ -134,8 +134,8 @@ export default function HistoryPage() {
                                                     : rand > 0.6
                                                         ? "bg-primary/80"
                                                         : rand > 0.4
-                                                            ? "bg-primary/60"
-                                                            : "bg-white/5";
+                                                            ? "bg-primary/40"
+                                                            : "bg-surface-darker border border-white/5";
                                             return <div key={i} className={`rounded-sm aspect-square ${weight}`}></div>;
                                         })}
                                     </div>
@@ -143,10 +143,10 @@ export default function HistoryPage() {
                                     <div className="flex items-center gap-2 mt-4 justify-end text-xs text-slate-500">
                                         <span>Less</span>
                                         <div className="flex gap-1">
-                                            <div className="w-3 h-3 rounded-sm bg-white/5"></div>
+                                            <div className="w-3 h-3 rounded-sm bg-surface-darker border border-white/5"></div>
                                             <div className="w-3 h-3 rounded-sm bg-primary/20"></div>
                                             <div className="w-3 h-3 rounded-sm bg-primary/60"></div>
-                                            <div className="w-3 h-3 rounded-sm bg-primary"></div>
+                                            <div className="w-3 h-3 rounded-sm bg-primary shadow-[0_0_5px_rgba(57,255,20,0.3)]"></div>
                                         </div>
                                         <span>More</span>
                                     </div>
