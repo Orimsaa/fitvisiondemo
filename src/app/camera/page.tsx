@@ -11,6 +11,7 @@ function CameraContent() {
 
     const [currentExercise, setCurrentExercise] = useState(model);
     const [repGoal, setRepGoal] = useState(12);
+    const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
 
     const exerciseName = currentExercise === "squat" ? "Back Squat" : currentExercise === "deadlift" ? "Deadlift" : "Bench Press";
     const isGoodForm = currentExercise === "squat" || currentExercise === "benchpress";
@@ -89,7 +90,7 @@ function CameraContent() {
                 },
                 width: 640,
                 height: 480,
-                facingMode: "user"
+                facingMode: facingMode
             });
 
             camera.start();
@@ -106,7 +107,7 @@ function CameraContent() {
                 pose.close();
             }
         };
-    }, [areScriptsLoaded]);
+    }, [areScriptsLoaded, facingMode]);
 
     const feedbackModel =
         currentExercise === "squat"
@@ -136,7 +137,7 @@ function CameraContent() {
                 className="absolute inset-0 z-0 w-full h-full object-cover"
                 style={{
                     filter: "brightness(0.6) contrast(1.1)",
-                    transform: "scaleX(-1)", // Mirror the image for self-facing
+                    transform: facingMode === "user" ? "scaleX(-1)" : "scaleX(1)", // Mirror only for front camera
                 }}
             />
 
@@ -149,7 +150,7 @@ function CameraContent() {
                     ref={canvasRef}
                     className="w-full h-full object-cover opacity-80"
                     style={{
-                        transform: "scaleX(-1)", // Must be mirrored to match the mirrored video
+                        transform: facingMode === "user" ? "scaleX(-1)" : "scaleX(1)", // Must match video mirroring
                     }}
                 />
             </div>
@@ -160,19 +161,28 @@ function CameraContent() {
                 <header className="flex items-center justify-between w-full">
                     <Link
                         href="/"
-                        className="flex items-center gap-2 text-white/90 hover:text-primary transition-colors bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 shadow-lg"
+                        className="flex items-center gap-2 text-white/90 hover:text-primary transition-colors bg-black/20 backdrop-blur-md px-3 md:px-4 py-2 rounded-full border border-white/10 shadow-lg"
                     >
                         <span className="material-symbols-outlined text-lg">arrow_back_ios_new</span>
-                        <span className="font-medium">Back</span>
+                        <span className="font-medium hidden md:block">Back</span>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 shadow-lg">
+                    <div className="flex items-center gap-2 md:gap-3">
+                        {/* Switch Camera Button (Mobile only) */}
+                        <button
+                            onClick={() => setFacingMode(prev => prev === "user" ? "environment" : "user")}
+                            className="md:hidden flex items-center justify-center size-10 bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white hover:text-primary transition-colors shadow-lg active:scale-95"
+                            title="Flip Camera"
+                        >
+                            <span className="material-symbols-outlined">flip_camera_ios</span>
+                        </button>
+
+                        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 shadow-lg">
                             <span className="material-symbols-outlined text-primary text-sm">videocam</span>
                             <span className="text-xs font-bold text-white tracking-wider">AI VISION ACTIVE</span>
                         </div>
                         <div className={`text-white px-3 py-1.5 rounded-lg flex items-center gap-2 shadow-lg ${isModelReady ? "animate-pulse-red bg-red-600 shadow-red-900/50" : "bg-orange-500 shadow-orange-900/50"}`}>
                             <div className={`w-2 h-2 rounded-full bg-white ${isModelReady ? "animate-pulse" : ""}`}></div>
-                            <span className="text-xs font-bold tracking-widest">{isModelReady ? "LIVE 00:42" : "LOADING AI"}</span>
+                            <span className="text-xs md:text-xs font-bold tracking-widest">{isModelReady ? "LIVE" : "LOADING AI"}</span>
                         </div>
                     </div>
                 </header>
