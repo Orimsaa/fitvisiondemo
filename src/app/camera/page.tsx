@@ -181,81 +181,78 @@ function CameraContent() {
                 <div className="flex-1 border-4 border-dashed border-primary/10 rounded-3xl m-4 pointer-events-none hidden md:block"></div>
 
                 {/* Bottom Controls & Info */}
-                <div className="w-full flex flex-col items-center gap-6 pb-4">
-                    {/* Analysis Card */}
-                    <div className="w-full max-w-md bg-background-dark/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl relative overflow-hidden group">
+                <div className="w-full flex flex-col items-center gap-3 md:gap-6 pb-2 md:pb-4 pointer-events-auto mt-auto">
+                    {/* Compact Analysis Card */}
+                    <div className="w-full max-w-md bg-background-dark/60 md:bg-background-dark/80 backdrop-blur-md md:backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg relative overflow-hidden group">
                         {/* Subtle green glow effect */}
                         <div className="absolute -top-10 -right-10 w-20 h-20 bg-primary/20 blur-3xl rounded-full"></div>
-                        <div className="flex flex-col gap-3">
-                            <div className="flex justify-between items-start gap-4">
-                                <div className="flex flex-col gap-1 w-full relative">
-                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider pl-1">Exercise</label>
+                        <div className="flex flex-col gap-2 md:gap-3">
+
+                            {/* Top Row: Exercise selection and Form Score side-by-side */}
+                            <div className="flex justify-between items-center gap-3">
+                                <div className="flex flex-col w-full relative">
                                     <select
                                         value={currentExercise}
                                         onChange={(e) => setCurrentExercise(e.target.value)}
-                                        className="appearance-none bg-surface-dark/80 border border-white/10 rounded-xl text-white font-bold py-3 pl-4 pr-10 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full cursor-pointer transition-all hover:bg-surface-dark hover:border-white/20 shadow-inner"
+                                        className="appearance-none bg-black/40 border border-white/10 rounded-xl text-white font-bold py-2 md:py-3 pl-3 md:pl-4 pr-8 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full cursor-pointer transition-all hover:bg-black/60 shadow-inner text-sm md:text-base"
                                     >
                                         <option value="benchpress">Bench Press</option>
                                         <option value="squat">Back Squat</option>
                                         <option value="deadlift">Deadlift</option>
                                     </select>
-                                    <span className="material-symbols-outlined absolute right-3 bottom-3 text-slate-400 pointer-events-none">expand_more</span>
+                                    <span className="material-symbols-outlined absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">expand_more</span>
                                 </div>
-                                <div className="flex flex-col gap-1 w-[120px]">
-                                    <label className="text-xs font-medium text-slate-400 uppercase tracking-wider text-right pr-1">Rep Goal</label>
-                                    <input
-                                        type="number"
-                                        value={repGoal}
-                                        onChange={(e) => setRepGoal(Number(e.target.value) || 1)}
-                                        min="1" max="100"
-                                        className="bg-surface-dark/80 border border-white/10 rounded-xl text-white font-bold py-3 px-4 text-center focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full transition-all hover:bg-surface-dark hover:border-white/20 shadow-inner"
-                                    />
+
+                                {/* Status Badge - smaller on mobile */}
+                                <div className="shrink-0">
+                                    <div className="px-2 md:px-3 py-1 md:py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/30 rounded-xl text-primary font-bold flex flex-col items-center justify-center shadow-[0_0_15px_rgba(57,255,20,0.15)] min-w-[60px] md:min-w-[80px]">
+                                        <span className="text-[9px] md:text-[10px] text-primary/80 uppercase tracking-widest leading-none mb-0.5">Form</span>
+                                        <span className="text-lg md:text-xl leading-none">85<span className="text-[10px] md:text-xs">%</span></span>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Status Badge */}
-                            <div className="flex shrink-0">
-                                <div className="px-3 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/30 rounded-xl text-primary font-bold flex flex-col items-center justify-center gap-1 shadow-[0_0_15px_rgba(57,255,20,0.15)] w-[80px]">
-                                    <span className="text-[10px] text-primary/80 uppercase tracking-widest leading-none">Form</span>
-                                    <span className="text-xl leading-none">85<span className="text-xs">%</span></span>
-                                </div>
-                            </div>
-
-                            <div className="h-px w-full bg-white/10"></div>
-
-                            {/* Alert / Feedback Section */}
-                            <div className={`flex items-start gap-3 border rounded-lg p-3 ${isGoodForm ? "bg-primary/10 border-primary/30" : "bg-red-500/10 border-red-500/30"}`}>
-                                <span className={`material-symbols-outlined shrink-0 ${isGoodForm ? "text-primary" : "text-red-400"}`}>
+                            {/* Alert / Feedback Section - more compact */}
+                            <div className={`flex items-start gap-2 border rounded-xl p-2 md:p-3 ${isGoodForm ? "bg-primary/10 border-primary/30" : "bg-red-500/10 border-red-500/30"}`}>
+                                <span className={`material-symbols-outlined shrink-0 text-lg md:text-xl ${isGoodForm ? "text-primary" : "text-red-400"}`}>
                                     {isGoodForm ? "info" : "warning"}
                                 </span>
-                                <div className="flex flex-col">
-                                    <span className={`font-bold text-sm ${isGoodForm ? "text-primary" : "text-red-300"}`}>
+                                <div className="flex flex-col flex-1 min-w-0">
+                                    <span className={`font-bold text-xs md:text-sm truncate ${isGoodForm ? "text-primary" : "text-red-300"}`}>
                                         {feedbackModel.title}
                                     </span>
-                                    <span className={`${isGoodForm ? "text-primary" : "text-red-200"} text-sm leading-tight opacity-80`}>
+                                    <span className={`${isGoodForm ? "text-primary" : "text-red-200"} text-[11px] md:text-sm leading-tight opacity-90 line-clamp-2`}>
                                         {isModelReady ? feedbackModel.detail : "Warming up AI model... Please stand in frame."}
                                     </span>
                                 </div>
                             </div>
 
-                            {/* Stats Row */}
+                            {/* Stats Row - horizontal scrollable on very small screens, normally flex */}
                             <div className="flex gap-2 mt-1">
-                                <div className="flex-1 bg-black/40 rounded-lg p-2 flex items-center justify-center gap-2 border border-white/5">
-                                    <span className="material-symbols-outlined text-primary text-sm">health_and_safety</span>
-                                    <span className="text-xs text-white font-medium">Injury Risk: Low</span>
+                                <div className="flex-1 bg-black/40 rounded-lg p-1.5 md:p-2 flex items-center justify-center gap-1.5 border border-white/5">
+                                    <span className="material-symbols-outlined text-primary text-sm md:text-base">health_and_safety</span>
+                                    <span className="text-[10px] md:text-xs text-white font-medium whitespace-nowrap">Risk: Low</span>
                                 </div>
-                                <div className="flex-1 bg-black/40 rounded-lg p-2 flex items-center justify-center gap-2 border border-white/5">
-                                    <span className="material-symbols-outlined text-blue-400 text-sm">fitness_center</span>
-                                    <span className="text-xs text-white font-medium">Reps: 0/{repGoal}</span>
+                                <div className="flex-1 bg-black/40 rounded-lg p-1.5 md:p-2 flex items-center justify-center gap-1.5 border border-white/5 relative">
+                                    <span className="material-symbols-outlined text-blue-400 text-sm md:text-base">fitness_center</span>
+                                    <span className="text-[10px] md:text-xs text-white font-medium flex items-center gap-1">
+                                        Reps: <span className="text-blue-400 font-bold">0</span>/
+                                        <input
+                                            type="number"
+                                            value={repGoal}
+                                            onChange={(e) => setRepGoal(Number(e.target.value) || 1)}
+                                            className="bg-transparent border-b border-white/20 w-8 text-center focus:outline-none focus:border-primary px-0 py-0 m-0"
+                                        />
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Main Action Button */}
+                    {/* Main Action Button - smaller height on mobile */}
                     <Link
                         href="/summary"
-                        className="w-full max-w-md h-14 bg-red-600 hover:bg-red-500 active:scale-[0.98] transition-all rounded-xl text-white font-bold text-lg shadow-lg shadow-red-900/40 flex items-center justify-center gap-3 cursor-pointer"
+                        className="w-full max-w-md h-12 md:h-14 bg-red-600/90 backdrop-blur-md hover:bg-red-500 active:scale-[0.98] transition-all rounded-xl text-white font-bold text-base md:text-lg shadow-lg shadow-red-900/40 border border-red-500/50 flex items-center justify-center gap-2 md:gap-3 cursor-pointer"
                     >
                         <span className="material-symbols-outlined">stop_circle</span>
                         End Analysis
